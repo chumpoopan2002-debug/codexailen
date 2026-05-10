@@ -1,105 +1,141 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <title>CodexAILEN</title>
+<meta charset="UTF-8">
+<title>CodexAILEN</title>
 
-  <style>
-    body {
-      margin: 0;
-      font-family: system-ui;
-      background: #0b0f1a;
-      color: #00ffe5;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
+<style>
+body {
+  margin: 0;
+  font-family: system-ui;
+  background: radial-gradient(circle at top, #0b1220, #05070f);
+  color: #00ffe5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
 
-    .box {
-      width: 600px;
-      border: 1px solid #00ffe5;
-      border-radius: 12px;
-      padding: 16px;
-      box-shadow: 0 0 40px #00ffe520;
-    }
+/* container */
+.app {
+  width: 720px;
+  border: 1px solid rgba(0,255,229,0.3);
+  border-radius: 16px;
+  padding: 18px;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 80px rgba(0,255,229,0.15);
+}
 
-    #log {
-      height: 300px;
-      overflow-y: auto;
-      background: #00000070;
-      padding: 10px;
-      margin-bottom: 10px;
-      border-radius: 8px;
-    }
+/* header */
+.header {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
 
-    input {
-      width: 75%;
-      padding: 10px;
-      background: transparent;
-      border: 1px solid #00ffe5;
-      color: #00ffe5;
-    }
+/* chat box */
+#log {
+  height: 360px;
+  overflow-y: auto;
+  background: rgba(0,0,0,0.5);
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 12px;
+  box-shadow: inset 0 0 20px rgba(0,255,229,0.05);
+}
 
-    button {
-      padding: 10px;
-      border: 1px solid #00ffe5;
-      background: transparent;
-      color: #00ffe5;
-      cursor: pointer;
-    }
-  </style>
+/* messages */
+.msg {
+  margin: 6px 0;
+  line-height: 1.4;
+}
+
+.user { color: #ffffff; }
+.ai { color: #00ffe5; }
+
+/* input */
+.row {
+  display: flex;
+  gap: 10px;
+}
+
+input {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,255,229,0.5);
+  background: transparent;
+  color: #00ffe5;
+  outline: none;
+}
+
+button {
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid #00ffe5;
+  background: transparent;
+  color: #00ffe5;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: rgba(0,255,229,0.1);
+}
+
+/* typing effect */
+.typing {
+  opacity: 0.6;
+  font-style: italic;
+}
+</style>
 </head>
 
 <body>
 
-<div class="box">
-  <h3>🧠 CodexAILEN</h3>
+<div class="app">
+  <div class="header">🧠 CodexAILEN — Cognitive Interface</div>
 
   <div id="log"></div>
 
-  <input id="input" placeholder="พิมพ์อะไรสักอย่าง..." />
-  <button onclick="send()">Send</button>
+  <div class="row">
+    <input id="input" placeholder="พิมพ์อะไรสักอย่าง..." />
+    <button onclick="send()">Send</button>
+  </div>
 </div>
 
 <script>
 let memory = [];
 
-function log(text) {
+function log(text, type="ai") {
   const box = document.getElementById("log");
   const div = document.createElement("div");
-  div.innerText = text;
+  div.className = "msg " + type;
+  div.innerText = (type === "user" ? "👤 " : "🧠 ") + text;
   box.appendChild(div);
   box.scrollTop = box.scrollHeight;
 }
 
 function brain(input) {
-  if (input.includes("?")) {
-    return "🧠 วิเคราะห์คำถาม → กำลังคิด...";
-  }
-
-  if (input.length > 20) {
-    return "📊 ข้อมูลยาว → วิเคราะห์เชิงลึก";
-  }
-
-  return "📌 รับข้อมูลแล้ว: " + input;
+  if (input.includes("?")) return "กำลังวิเคราะห์คำถาม...";
+  if (input.length > 30) return "ข้อมูลซับซ้อน → processing deeper layer...";
+  return "รับข้อมูลแล้ว: " + input;
 }
 
 function send() {
   const input = document.getElementById("input");
   const value = input.value.trim();
-
   if (!value) return;
 
-  log("👤 " + value);
+  log(value, "user");
+  log("thinking...", "ai");
 
   memory.push(value);
 
-  const response = brain(value);
-
   setTimeout(() => {
-    log("🧠 " + response);
-  }, 300);
+    log(brain(value), "ai");
+  }, 400);
 
   input.value = "";
 }
