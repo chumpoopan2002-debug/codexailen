@@ -1,40 +1,19 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-<meta charset="UTF-8">
-<title>CodexAILEN</title>
+function brain(input){
 
-<style>
-body{
-  margin:0;
-  font-family:system-ui;
-  background:#0b0f14;
-  color:#e6f1ff;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
+  if(input.includes("?")){
+    return "อืม... คำถามนี้น่าสนใจนะ เดี๋ยวขอคิดก่อน 🤔";
+  }
+
+  if(input.includes("ทำไร")){
+    return "ก็อยู่ตรงนี้แหละ 👀 แล้วคุณล่ะ ทำอะไรอยู่?";
+  }
+
+  if(input.includes("ตอบกลับ")){
+    return "โอเค ฉันอยู่นี่ 👋 มีอะไรอยากคุยต่อไหม?";
+  }
+
+  return "รับรู้แล้วนะ 👌";
 }
-
-.app{
-  width:900px;
-  max-width:95%;
-  background:#111826;
-  border-radius:16px;
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
-  border:1px solid #1f2a3a;
-}
-
-/* header */
-.header{
-  padding:14px;
-  background:#0f1622;
-  font-weight:600;
-  border-bottom:1px solid #1f2a3a;
-}
-
 /* chat */
 #log{
   flex:1;
