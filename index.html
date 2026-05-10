@@ -2,92 +2,118 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<title>CodexAILEN</title>
+<title>CodexAILEN Aurora</title>
 
 <style>
-body {
-  margin: 0;
-  font-family: system-ui;
-  background: radial-gradient(circle at top, #0b1220, #05070f);
-  color: #00ffe5;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+body{
+  margin:0;
+  font-family:system-ui;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background: radial-gradient(circle at top, #0a1a2f, #02040a);
+  color:#00ffe5;
+  overflow:hidden;
 }
 
-/* container */
-.app {
-  width: 720px;
-  border: 1px solid rgba(0,255,229,0.3);
-  border-radius: 16px;
-  padding: 18px;
-  background: rgba(0,0,0,0.4);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 0 80px rgba(0,255,229,0.15);
+/* glow background */
+body::before{
+  content:"";
+  position:absolute;
+  width:600px;
+  height:600px;
+  background:#00ffe5;
+  filter:blur(200px);
+  opacity:0.15;
+  top:-100px;
+  left:-100px;
+}
+
+/* app glass */
+.app{
+  width:900px;
+  border-radius:24px;
+  padding:18px;
+  background:rgba(255,255,255,0.04);
+  backdrop-filter:blur(30px);
+  border:1px solid rgba(0,255,229,0.2);
+  box-shadow:0 0 80px rgba(0,255,229,0.1);
+  z-index:2;
 }
 
 /* header */
-.header {
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 10px;
+.header{
+  font-size:18px;
+  font-weight:600;
+  margin-bottom:12px;
+  letter-spacing:1px;
 }
 
-/* chat box */
-#log {
-  height: 360px;
-  overflow-y: auto;
-  background: rgba(0,0,0,0.5);
-  border-radius: 12px;
-  padding: 12px;
-  margin-bottom: 12px;
-  box-shadow: inset 0 0 20px rgba(0,255,229,0.05);
+/* chat */
+#log{
+  height:480px;
+  overflow:auto;
+  padding:14px;
+  border-radius:16px;
+  background:rgba(0,0,0,0.6);
+  box-shadow: inset 0 0 40px rgba(0,255,229,0.05);
 }
 
 /* messages */
-.msg {
-  margin: 6px 0;
-  line-height: 1.4;
+.msg{
+  margin:10px 0;
+  padding:10px 12px;
+  border-radius:14px;
+  max-width:80%;
+  animation:fade 0.25s ease;
 }
 
-.user { color: #ffffff; }
-.ai { color: #00ffe5; }
-
-/* input */
-.row {
-  display: flex;
-  gap: 10px;
+.user{
+  background:rgba(255,255,255,0.06);
+  color:white;
+  margin-left:auto;
 }
 
-input {
-  flex: 1;
-  padding: 12px;
-  border-radius: 10px;
-  border: 1px solid rgba(0,255,229,0.5);
-  background: transparent;
-  color: #00ffe5;
-  outline: none;
+.ai{
+  background:rgba(0,255,229,0.07);
 }
 
-button {
-  padding: 12px 16px;
-  border-radius: 10px;
-  border: 1px solid #00ffe5;
-  background: transparent;
-  color: #00ffe5;
-  cursor: pointer;
-  transition: 0.2s;
+/* input row */
+.row{
+  display:flex;
+  gap:10px;
+  margin-top:12px;
 }
 
-button:hover {
-  background: rgba(0,255,229,0.1);
+input{
+  flex:1;
+  padding:12px;
+  border-radius:14px;
+  background:transparent;
+  border:1px solid #00ffe5;
+  color:#00ffe5;
+  outline:none;
 }
 
-/* typing effect */
-.typing {
-  opacity: 0.6;
-  font-style: italic;
+button{
+  padding:12px 16px;
+  border-radius:14px;
+  background:transparent;
+  border:1px solid #00ffe5;
+  color:#00ffe5;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+button:hover{
+  background:rgba(0,255,229,0.1);
+}
+
+/* animation */
+@keyframes fade{
+  from{opacity:0; transform:translateY(5px);}
+  to{opacity:1; transform:translateY(0);}
 }
 </style>
 </head>
@@ -95,50 +121,68 @@ button:hover {
 <body>
 
 <div class="app">
-  <div class="header">🧠 CodexAILEN — Cognitive Interface</div>
+  <div class="header">🧠 CodexAILEN — Aurora Interface</div>
 
   <div id="log"></div>
 
   <div class="row">
-    <input id="input" placeholder="พิมพ์อะไรสักอย่าง..." />
+    <input id="input" placeholder="พิมพ์ความคิดของคุณ..." />
     <button onclick="send()">Send</button>
   </div>
 </div>
 
 <script>
+
 let memory = [];
 
-function log(text, type="ai") {
-  const box = document.getElementById("log");
-  const div = document.createElement("div");
-  div.className = "msg " + type;
-  div.innerText = (type === "user" ? "👤 " : "🧠 ") + text;
+function brain(input){
+  memory.push(input);
+
+  let mood = "calm";
+
+  if(input.includes("?")) mood = "thinking";
+  if(input.length > 40) mood = "deep processing";
+  if(input.includes("!")) mood = "high energy";
+
+  return `
+🧠 SYSTEM RESPONSE
+------------------
+Input: ${input}
+
+State:
+- mood: ${mood}
+- memory: ${memory.length}
+
+AI: processed successfully
+`;
+}
+
+function log(text,type="ai"){
+  const box=document.getElementById("log");
+  const div=document.createElement("div");
+  div.className="msg "+type;
+  div.innerText=(type==="user"?"👤 ":"🧠 ")+text;
   box.appendChild(div);
-  box.scrollTop = box.scrollHeight;
+  box.scrollTop=box.scrollHeight;
 }
 
-function brain(input) {
-  if (input.includes("?")) return "กำลังวิเคราะห์คำถาม...";
-  if (input.length > 30) return "ข้อมูลซับซ้อน → processing deeper layer...";
-  return "รับข้อมูลแล้ว: " + input;
+function send(){
+  const input=document.getElementById("input");
+  const value=input.value.trim();
+  if(!value) return;
+
+  log(value,"user");
+
+  setTimeout(()=>{
+    log(brain(value),"ai");
+  },250);
+
+  input.value="";
 }
 
-function send() {
-  const input = document.getElementById("input");
-  const value = input.value.trim();
-  if (!value) return;
+log("🌌 Aurora UI loaded");
+log("CodexAILEN ready");
 
-  log(value, "user");
-  log("thinking...", "ai");
-
-  memory.push(value);
-
-  setTimeout(() => {
-    log(brain(value), "ai");
-  }, 400);
-
-  input.value = "";
-}
 </script>
 
 </body>
